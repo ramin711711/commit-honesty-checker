@@ -127,11 +127,12 @@ if __name__ == "__main__":
     evaluation = ai_evaluation(commit_message, diff_text)
 
     if is_message_true(commit_message, lines_touched, args.threshold):
-        print("Passed the initial observation✅")
+        print("Passed the initial observation: size check -> honest ✅")
     else:
-        print("Did NOT pass the initial observation❌")
+        print("Did NOT pass the initial observation: size check -> dishonest ❌")
 
     if evaluation is not None:
+        print(f"\nAI semantic check:")
         print(f"\n{MAGENTA}Commit message accuracy:{RESET} {evaluation['accuracy_score']}\n\n{BLUE}Information about the commit:{RESET} {evaluation['reasoning']}\n\n{YELLOW}Suggested Commit Message:{RESET} {evaluation['suggested_message']}")
     
     if args.strict:

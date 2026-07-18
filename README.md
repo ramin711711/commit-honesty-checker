@@ -65,10 +65,13 @@ python commit_checker.py -o <old_commit> -n <new_commit> -t <threshold> [--stric
 
 **As a git hook (runs automatically on every commit):**
 ```bash
-cp commit_msg_hook.py /path/to/repo/.git/hooks/commit-msg
-chmod +x /path/to/repo/.git/hooks/commit-msg
+export COMMIT_CHECKER_PATH="/path/to/commit-honesty-checker"   # add to your shell profile to persist
+cp commit_msg_hook.py /path/to/your/repo/.git/hooks/commit-msg
+chmod +x /path/to/your/repo/.git/hooks/commit-msg
 ```
 The hook blocks by default rather than just warning — installing it is an explicit opt-in to enforcement, unlike the CLI which stays informational unless `--strict` is passed.
+
+`COMMIT_CHECKER_PATH` tells the hook where to find this repo's code, since the hook gets copied into a *different* project's `.git/hooks/` folder and can't assume it's sitting next to `commit_checker.py`. If it's not set, the hook prints a clear message telling you what to set, instead of failing with an unhelpful import error.
 
 ## Notable design decisions
 
@@ -76,10 +79,10 @@ The hook blocks by default rather than just warning — installing it is an expl
 - **Regex word-boundary matching, not substring matching** — an earlier version flagged "Reformat docstrings" because "format" appeared as a substring, even though the message wasn't claiming smallness. Fixed with `\bkeyword\b` matching.
 - **AI output isn't trusted blindly** — responses are stripped of markdown fences and parsed defensively inside a try/except, since prompting for clean JSON reduces but doesn't guarantee malformed output.
 - **CLI warns by default, hook blocks by default** — different entry points imply different intent. Running the CLI manually is exploratory; installing a hook is a deliberate choice to enforce.
+- **Hook location resolved via an environment variable, not a hardcoded path** — a hook installed in one repo's `.git/hooks/` needs to import code from wherever *this* repo was cloned, and there's no reliable way to compute that relationship automatically. Full packaging (`pip install`) would solve this more elegantly but was more scope than this project needed; `COMMIT_CHECKER_PATH` is the pragmatic middle ground.
 
 ## Known limitations
 
-- The hook currently resolves `commit_checker.py` via a path added to `sys.path` at runtime — this needs updating if the repo is cloned somewhere other than its original location.
 - The size threshold is a fixed number rather than scaled to repo size.
 - Keyword matching is word-level, not intent-level — a message like "minor formatting pass across 40 files" can still get flagged even when "minor" is an accurate description.
 
