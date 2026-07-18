@@ -1,6 +1,6 @@
 # commit-honesty-checker
 
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Claude API](https://img.shields.io/badge/AI-Claude-purple.svg)](https://www.anthropic.com/)
 
