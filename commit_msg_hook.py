@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
+import sys
 from commit_checker import get_staged_diff
 from commit_checker import total_touched_lines
 from commit_checker import is_message_true
 from commit_checker import ai_evaluation
-import sys
+
 
 #text colors:
 RED = "\033[31m"
